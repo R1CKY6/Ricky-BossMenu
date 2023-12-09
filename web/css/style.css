@@ -1,0 +1,166 @@
+@font-face {
+    font-family: 'Main Font';
+    src: url(../fonts/font.otf);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    user-select: none;
+    font-family: 'Main Font';
+    color: white;
+    font-style: normal;
+    font-weight: 700;
+    /* letter-spacing: 0.11em; */
+    overflow: hidden;
+}
+
+
+#app {
+    display: none;
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    background-size: contain;
+    background-image: url('../img/Employee\ Managament.png');
+    background: radial-gradient(63.56% 152.1% at 51.88% 65.97%, #000000 0%, rgba(0, 0, 0, 0.9) 100%);
+}
+
+
+stop {
+    transition: 0.5s;
+}
+  
+#optionBottom:hover stop {
+    stop-color: #4aa2f0
+}
+
+#closeButton:hover stop {
+    stop-color: #db3e3e
+}
+
+@keyframes dashboard {
+    0% {
+        transform: scale(0.1);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+.dashboard-enter-active {
+    animation: dashboard 0.4s ease-out forwards;
+}
+
+.dashboard-leave-active {
+    animation: dashboard 0.4s ease-out forwards reverse;
+}
+
+.titleScreen {
+    position: absolute;
+    top: 1.9%;
+    background: radial-gradient(50% 50% at 50% 50%, #6EDED7 0%, #76A9C2 0.01%, #2F4753 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-size: 2.08333vw;
+}
+
+
+.subtitleScreen {
+    background: radial-gradient(68.42% 68.42% at 50.43% 52.63%, #FFF 0%, rgba(255, 255, 255, 0.00) 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-size: 0.83333vw;
+}
+
+input:focus, h1:focus {
+    outline: none;
+}
+
+input {
+    padding: 1vh;
+    background: transparent;
+}
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+@keyframes hireName {
+    0% {
+        transform: translate(0,8vh);
+    }
+    100% {
+        transform: translate(0, 0);
+    }
+}
+
+@keyframes fastAction {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+.hireName-enter-active {
+    animation: hireName 0.3s ease-out forwards;
+}
+
+.hireName-leave-active {
+    animation: hireName 0.3s ease-out forwards reverse;
+}
+
+.fastAction-enter-active {
+    animation: fastAction 0.3s ease-out forwards;
+}
+
+.fastAction-leave-active {
+    animation: fastAction 0.3s ease-out forwards reverse;
+}
+
+@keyframes notify {
+    0% {
+        transform: translateX(40vh);
+    }
+    100% {
+        transform: translateX(0);
+    }
+}
+
+.notify-enter-active {
+    animation: notify 0.3s ease-out forwards;
+}
+
+.notify-leave-active {
+    animation: notify 0.3s ease-out forwards reverse;
+}
+
+
+::-webkit-scrollbar {
+    display: none;
+}
+
+#employee:last-child {
+    margin-bottom: 0;
+}

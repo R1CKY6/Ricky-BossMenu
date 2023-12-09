@@ -1,0 +1,409 @@
+<html>
+    <head>
+        <title>Boss Menu - Tech Development - discord.gg/tHAbhd94vS</title>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="stylesheet" href="./css/style.css">
+    </head>
+    <body>
+
+        <div id="app">
+            <div class="h-full w-full flex items-center justify-center">
+                <div style="animation: fadeIn 1s;" class="w-[70%] bg-[url('./img/container.png')] bg-cover bg-no-repeat h-[74.7%] absolute">
+
+                    <!-- Notify -->
+                    <transition name="notify">
+                        <div v-if="notify.enable" class="h-[9.3%] w-[24%] absolute top-[4%] right-[2%]">
+                            <img src="./img/dashboard/notify.png" alt="">
+                            <div class="h-[85%] w-[80%] top-[10%] absolute left-[4%]">
+                                <span style="text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25); color: #D2CBCB;" class="text-[0.78125vw]">{{notify.message}}</span>
+                            </div>
+                        </div>
+                    </transition>
+
+
+                    <!-- Bottom Action -->
+                    <div class="h-[18.41%] w-[96.1%] right-[0%] absolute bottom-[0%] flex items-center">
+                        
+                        <div v-for="v in bottomOption" class="h-[72.1%] w-[8.3%] relative mr-[4%]">
+                            <div class="h-full w-full" v-bind:style="getOptionSelected(v.screen)">
+                                
+                                <div @click="changeScreen(v.screen)" :id="v.screen" class="h-full w-full cursor-pointer flex items-center justify-center" v-html='getCode(v.screen)'>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div @click="closeNui" class="cursor-pointer h-[74%] w-[8.5%] absolute right-[3.3%]" v-html="getCode('close')">
+
+                        </div>
+                    </div>
+
+
+                    <!-- Start Top Screen -->
+
+                    <div class="h-[82%] w-full absolute flex items-center justify-center">
+
+                        <transition name="dashboard">
+                            <div v-if="screen=='employee'" class="h-full w-full absolute flex items-center justify-center">
+                                <h1 class="titleScreen">{{locales.employee}}</h1>
+                                <div class="h-[8.3%] w-[31.4%] absolute top-[12.3%]">
+                                    <img src="./img/employee/input.png" class="absolute" alt="">
+                                    <input v-model="employe_name" type="text" class="text-[#6B9DCB] text-[0.9375vw] h-full w-full absolute p-[0.5vw]" :placeholder="locales.input_employee">
+                                </div>
+                                <div class="h-[65.24%] absolute top-[26.2%] w-[32.7%] overflow-y-auto">
+                                    <div v-for="v in searchFromName()" id="employee" class="h-[20.5%] w-full relative mb-[6%]">
+                                        <img class="absolute" src="./img/employee/employee.png" alt="">
+                                        <div class="h-full w-full absolute flex justify-center items-center">
+                                            <div class="h-[75%] w-[60%]">
+                                                <h1 class="text-[0.9375vw]">{{v.fullName}}</h1>
+                                                <h1 class="text-[0.68125vw] text-[#BABABA]">{{v.grade}}</h1>
+                                                <h1 class="text-[0.68125vw] text-[#BABABA]">{{locales.since}} {{v.hireDate}}</h1>
+                                            </div>
+                                            <div @click="viewEmployeeInfo(v)" class="h-[60%] w-[12%] absolute right-[4.5%] cursor-pointer">
+                                                <img src="./img/employee/action.png" alt="">
+                                            </div>
+                                            <div class="rounded-full h-[75%] w-[15%] border absolute left-[2%] flex items-center justify-center">
+                                                <div class="h-[90%] w-[90%] border rounded-full flex justify-center items-center">
+                                                    <img class="w-[80%]" :src="v.avatar" alt="">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </transition>
+                        
+                        <transition name="dashboard">
+                            <div v-if="screen=='employee_information'" class="h-full w-full absolute flex items-center justify-center">
+                                <h1 class="titleScreen">{{locales.employee_managament}}</h1>
+
+                                <div @click="changeScreen('employee')" class="h-[10%] w-[4.85%] absolute top-[3.5%] left-[3.1%] cursor-pointer">
+                                    <img src="./img/turnback.png" alt="">
+                                </div>
+
+                                <div class="h-[50%] w-[21.2%] right-[3.2%] absolute flex items-center justify-center">
+                                    <img src="./img/employee_information/employee_info.png" alt="">
+                                    <div class="absolute text-[1.30208vw] top-[29.5%]">{{locales.employee_info}}</div>
+                                    <div class="h-[22%] absolute top-[3.2%] w-[25%] rounded-full flex justify-center items-center">
+                                        <img class="w-[80%]" :src="employeeSelected.avatar" alt="">
+                                    </div>
+                                    <div class="h-[49%] text-[0.73333vw] absolute top-[43%] w-full flex items-center flex-col">
+                                        <h1 class="subtitleScreen mb-[6%]">{{employeeSelected.fullName}}</h1>
+                                        <h1 class="mb-[6%]">{{locales.rank}}: {{employeeSelected.grade}}</h1>
+                                        <h1 class="mb-[6%]">{{locales.play_time}}: {{employeeSelected.playTime}}</h1>
+                                        <h1 class="mb-[6%]">{{locales.hired_from}}: {{employeeSelected.hiredFrom}}</h1>
+                                        <h1 v-if="employeeSelected.online" class="">{{locales.status}}: <span class="text-[#5ED327]">{{locales.online}}</span></h1>
+                                        <h1 v-else class="">{{locales.status}}: <span class="text-[#D33127]">{{locales.offline}}</span></h1>
+                                    </div>
+                                </div>
+
+                                <h1 class="text-[1.5625vw] absolute top-[37%]">{{locales.since}}</h1>
+                                <h1 class="text-[3.64583vw] absolute top-[45.5%]">{{employeeSelected.hireDate}}</h1>
+
+                                <transition name="dashboard">
+                                    <div v-if="firing" class="h-[24%] w-[35.4%] absolute bottom-[1.7%] flex justify-center">
+                                        <img src="./img/dashboard/fastActionContainer.png" alt="">
+                                        <h1 class="absolute mt-[0.5vw] text-[white] text-[02]">{{locales.sure_fire}}</h1>
+
+                                        <div @click="firePlayer()" class="h-[26.3%] w-[33.5%] absolute bottom-[5.5%] flex items-center justify-center cursor-pointer left-[17%]">
+                                            <img src="./img/dashboard/fastActionConfirm.png" alt="">
+                                            <span class="text-[0.83333vw] absolute">{{locales.confirm}}</span>
+                                        </div>
+
+                                        <div @click="closeFastAction(false, true)" class="h-[26.3%] w-[33.5%] absolute bottom-[5.5%] flex items-center justify-center cursor-pointer right-[13%]">
+                                            <img src="./img/dashboard/fastActionConfirm.png" alt="">
+                                            <span class="text-[0.83333vw] absolute">{{locales.cancel}}</span>
+                                        </div>
+
+                                        <div @click="closeFastAction(false, true)" class="cursor-pointer h-[24.5%] w-[8.3%] absolute bottom-[5.8%] left-[3.5%]">
+                                            <img src="./img/dashboard/fastActionClose.png" alt="">
+                                        </div>
+                                    </div>
+                                </transition>
+
+                                <transition name="dashboard">
+                                    <div v-if="editingGrade" class="h-[24%] w-[35.4%] absolute bottom-[1.7%] flex justify-center">
+                                        <img src="./img/dashboard/fastActionContainer.png" alt="">
+
+                                        <div class="h-[40%] absolute bottom-[47.5%] w-[55%]">
+                                            <img src="./img/dashboard/fastActionInput.png" alt="">
+                                        </div>
+
+                                        <div class="h-[40%] absolute bottom-[47.5%] w-[55%] flex items-center justify-center">
+                                            <h1>{{grades[gradeSelected1].label}}</h1>
+                                        </div>
+
+                                        <div @click="confirmFastAction('edit_grade')" class="h-[26.3%] w-[33.5%] absolute bottom-[5.5%] flex items-center justify-center cursor-pointer">
+                                            <img src="./img/dashboard/fastActionConfirm.png" alt="">
+                                            <span class="absolute text-[0.83333vw]">{{locales.confirm}}</span>
+                                        </div>
+
+                                        <div @click="closeFastAction(false, true)" class="cursor-pointer h-[24.5%] w-[8.3%] absolute bottom-[5.8%] left-[3.5%]">
+                                            <img src="./img/dashboard/fastActionClose.png" alt="">
+                                        </div>
+
+                                        <div @click="previousFastAction(false, true)" class="h-[30%] w-[5.5%] bottom-[53%] absolute left-[11.5%] cursor-pointer">
+                                            <img src="./img/dashboard/arrow.png" alt="">
+                                        </div>
+                                        <div @click="nextFastAction(false, true)" class="h-[30%] w-[5.5%] bottom-[53%] absolute right-[10%] cursor-pointer" style="transform: rotate(180deg);">
+                                            <img src="./img/dashboard/arrow.png" alt="">
+                                        </div>
+                                    </div>
+                                </transition>
+
+                                <div class="h-[75%] w-[21.2%] left-[3.2%] absolute flex items-center justify-center">
+                                    <img src="./img/employee_information/employee_manage.png" alt="">
+                                    <div class="h-[14.8%] absolute top-[0.2%] w-[25%] rounded-full">
+                                        <img src="https://cdn.discordapp.com/attachments/944572269202640946/1008064551494881310/logoricky.png?ex=6558f446&is=65467f46&hm=15a57cedde6650fbfc418c03756b9b5e2186579774a250cbce177b55fdf6cd0a&" alt="">
+                                    </div>
+
+                                    <div class="absolute text-[1.30208vw] top-[18.6%]">{{locales.actions}}</div>
+                                    <div class="absolute w-[59%] h-[29.9%] top-[28%]">
+                                        
+
+                                        <div @click="changeFastActionSettings('fire')" class="w-full h-[31%] relative flex items-center justify-center mb-[3%] cursor-pointer">
+                                            <span class="absolute text-[0.83333vw]">{{locales.fire}}</span>
+                                            <div class="h-full w-full" style="z-index: 1;" v-html="getCode('fastAction')">
+                                            </div>
+                                        </div>
+
+                                        <div @click="changeFastActionSettings('edit_grade')" class="w-full h-[31%] relative flex items-center justify-center cursor-pointer">
+                                            <span class="absolute text-[0.83333vw]">{{locales.edit_grade}}</span>
+                                            <div class="h-full w-full" style="z-index: 1;" v-html="getCode('fastAction2')">
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="h-[28%] w-[80%] absolute bottom-[11.3%] flex justify-center items-center">
+                                        <img src="./img/employee_information/note.png" alt="">
+                                        <div class="h-[95%] w-[95%] absolute p-[0.5vh]">
+                                            <h1 class="h-full w-full text-[0.83333vw] overflow-y-auto" contenteditable="true" id="note">{{employeeSelected.note}}</h1>
+                                        </div>
+                                    </div>
+                                    <h1 class="absolute bottom-[3%] text-[0.625vw]">{{locales.last_update}} : {{employeeSelected.noteUpdate}}</h1>
+                                </div>
+                            </div>
+                        </transition>
+                    
+                        <transition name="dashboard">
+                            <div v-if="screen=='dashboard'" class="h-full w-full absolute flex items-center justify-center">
+                                <h1 class="titleScreen">{{locales.dashboard}}</h1>
+
+                                <h1 class="text-[1.5625vw] absolute top-[37%]">{{currentTime}}</h1>
+                                <h1 class="text-[3.64583vw] absolute top-[45.5%]">{{currentTime2}}</h1>
+
+
+                                <!-- Fast Actions -->
+                                <transition name="fastAction">
+                                    <div v-if="!anim.fastAction" class="h-[24%] w-[35.4%] absolute bottom-[1.7%] flex items-center justify-center">
+                                        <img src="./img/dashboard/fastActionContainer.png" alt="">
+                                        <div class="h-[40%] absolute bottom-[47.5%] w-[55%]">
+                                            <img src="./img/dashboard/fastActionInput.png" alt="">
+                                        </div>
+                                        
+                                        <div @click="closeFastAction()" class="cursor-pointer h-[24.5%] w-[8.3%] absolute bottom-[5.8%] left-[3.5%]">
+                                            <img src="./img/dashboard/fastActionClose.png" alt="">
+                                        </div>
+                                        <div class="h-[40%] absolute bottom-[47.5%] w-[55%]">
+                                            <div v-if="fastActionSettings.playerNearby" class="h-full w-full flex items-center justify-center">
+                                                <transition name="hireName">
+                                                    <div v-if="!anim.hire" class="h-full w-full flex items-center justify-center absolute">
+                                                        <span v-if="fastActionSettings.playerID" class="absolute text-[0.83333vw]">{{fastActionSettings.playerName+' ('+fastActionSettings.playerID+')'}}</span>                                                
+                                                    </div>
+                                                </transition>
+                                            </div>
+                                            <div v-if="fastActionSettings.input" class="h-full w-full flex items-center justify-center">
+                                                <input :placeholder="locales.amount" v-model="fastActionSettings.amount" type="number" class="h-full w-full text-[0.83333vw] text-center">
+                                            </div>
+                                        </div>
+    
+                                        <div class="h-[26.3%] w-[33.5%] absolute bottom-[5.5%]">
+                                            <img src="./img/dashboard/fastActionConfirm.png" alt="">
+                                        </div>
+    
+                                        <div @click="confirmFastAction('hire')" v-if="fastActionSettings.playerNearby" class="h-[26.3%] w-[33.5%] absolute bottom-[5.5%] flex items-center justify-center cursor-pointer">
+                                            <span class="text-[0.83333vw]">{{locales.confirm}}</span>
+                                        </div>
+    
+                                        <div @click="confirmFastAction('money')" v-if="fastActionSettings.input" class="h-[26.3%] w-[33.5%] absolute bottom-[5.5%] flex items-center justify-center cursor-pointer">
+                                            <span v-if="fastActionSettings.withdraw_money" class="text-[0.83333vw]">{{locales.withdraw_money}}</span>
+                                            <span v-else class="text-[0.83333vw]">{{locales.deposit_money}}</span>
+                                        </div>
+    
+                                        <div @click="previousFastAction()" class="h-[30%] w-[5.5%] bottom-[53%] absolute left-[11.5%] cursor-pointer">
+                                            <img src="./img/dashboard/arrow.png" alt="">
+                                        </div>
+                                        <div @click="nextFastAction()" class="h-[30%] w-[5.5%] bottom-[53%] absolute right-[10%] cursor-pointer" style="transform: rotate(180deg);">
+                                            <img src="./img/dashboard/arrow.png" alt="">
+                                        </div>
+                                    </div>
+                                </transition>
+
+
+                                <!-- Society Info -->
+                                <div class="h-[75%] w-[21.2%] left-[3.2%] absolute flex items-center justify-center">
+                                    <img src="./img/dashboard/society.png" alt="">
+                                    <div class="h-[14.8%] absolute top-[0.2%] w-[25%] rounded-full flex items-center justify-center">
+                                        <img class="w-[80%]" :src="societyInfo.logo" alt="">
+                                    </div>
+                                    <div class="absolute text-[1.30208vw] top-[18.6%]">{{locales.society_informations}}</div>
+
+                                    <div class="h-[49%] text-[0.83333vw] absolute top-[28%] w-full flex items-center flex-col">
+                                        <h1 class="subtitleScreen mb-[6%]">{{societyInfo.label}}</h1>
+                                        <div class="mb-[6%]">{{locales.society_money}}: <span style="color: #78FF75;">{{societyInfo.money}}{{locales.currency}}</span></div>
+                                        <h1 class="mb-[6%]">{{locales.employee}}: {{employee.length}}</h1>
+                                        <div class="">{{locales.since}} {{societyInfo.creationDate}}</div>
+                                    </div>
+                                    
+                                    <div class="absolute text-[1.30208vw] top-[60%]">{{locales.actions}}</div>
+                                    <div class="absolute w-[59%] h-[29.9%] bottom-[2%]">
+                                        
+
+                                        <div @click="changeFastActionSettings('hire')" class="w-full h-[31%] relative flex items-center justify-center mb-[3%] cursor-pointer">
+                                            <span class="absolute text-[0.83333vw]">{{locales.hire}}</span>
+                                            <div class="h-full w-full" style="z-index: 1;" v-html="getCode('fastAction')">
+                                            </div>
+                                        </div>
+
+                                        <div @click="changeFastActionSettings('withdraw_money')" class="w-full h-[31%] relative flex items-center justify-center mb-[3%] cursor-pointer">
+                                            <span class="absolute text-[0.83333vw]">{{locales.withdraw_money}}</span>
+                                            <div class="h-full w-full" style="z-index: 1;" v-html="getCode('fastAction2')">
+                                            </div>
+                                        </div>
+
+                                        <div @click="changeFastActionSettings('deposit_money')" class="w-full h-[31%] relative flex items-center justify-center cursor-pointer">
+                                            <span class="absolute text-[0.83333vw]">{{locales.deposit_money}}</span>
+                                            <div class="h-full w-full" style="z-index: 1;" v-html="getCode('fastAction3')">
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+                                    
+                                </div>
+
+                                <!-- Employee Info -->
+                                <div class="h-[47%] w-[21.2%] right-[3.2%] absolute flex items-center justify-center">
+                                    <img src="./img/dashboard/employee_info.png" alt="">
+                                    <div class="h-[23%] absolute top-[4.5%] w-[25%] rounded-full flex justify-center items-center">
+                                        <img class="w-[80%]" :src="getMyInfo().avatar" alt="">
+                                    </div>
+
+                                    <div class="absolute text-[1.30208vw] top-[29.5%]">{{locales.welcome}}</div>
+                                    <div class="h-[49%] text-[0.83333vw] absolute top-[43%] w-full flex items-center flex-col">
+                                        <h1 class="subtitleScreen mb-[5%]">{{getMyInfo().fullName}}</h1>
+                                        <h1 class="mb-[5%]">{{locales.rank}}: {{getMyInfo().grade}}</h1>
+                                        <h1 class="mb-[5%]">{{locales.play_time}}: {{getMyInfo().playTime}}</h1>
+                                        <div class="">{{locales.since}}: {{getMyInfo().hireDate}}</div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </transition>
+
+                        <transition name="dashboard">
+                            <div v-if="screen=='grade_information'" class="h-full w-full absolute flex items-center justify-center">
+                                <h1 class="titleScreen">{{locales.grade_managament}}</h1>
+
+                                <div @click="changeScreen('grades')" class="h-[10%] w-[4.85%] absolute top-[3.5%] left-[3.1%] cursor-pointer">
+                                    <img src="./img/turnback.png" alt="">
+                                </div>
+
+                                <h1 class="text-[1.5625vw] absolute top-[37%]">{{locales.employees}}</h1>
+                                <h1 class="text-[3.64583vw] absolute top-[45.5%]">{{getGradeEmployee(this.gradeNumberSelected).length}}</h1>
+
+                                <div class="absolute h-[17.7%] w-[21.3%] left-[3.2%] flex justify-center">
+                                    <img class="absolute" src="./img/grade_manage/actions.png" alt="">
+                                    <h1 class="text-[1.04167vw] absolute top-[4%]">{{locales.actions}}</h1>
+
+                                    <div @click="editSalary()" class="h-[35%] w-[57.5%] absolute bottom-[9%] cursor-pointer flex items-center justify-center">
+                                        <div class="h-full w-full" v-html="getCode('fastAction')"></div>
+                                        <div class="absolute">{{locales.edit_salary}}</div>
+                                    </div>
+                                </div>
+
+                                <transition name="dashboard">
+                                    <div v-if="editingSalary" class="h-[24%] w-[35.4%] absolute bottom-[4.5%] flex justify-center items-center">
+                                        <img src="./img/dashboard/fastActionContainer.png" alt="">
+    
+                                        <div class="h-[40%] absolute bottom-[47.5%] w-[55%]">
+                                            <img class="absolute" src="./img/dashboard/fastActionInput.png" alt="">
+                                        </div>
+    
+                                        <div class="h-[40%] absolute bottom-[47.5%] w-[55%]">
+                                            <input style="z-index: 1;" :placeholder="locales.amount" v-model="fastActionSettings.amount" type="number" class="h-full w-full text-[0.83333vw] text-center">
+                                        </div>
+                                        
+                                        <div @click="previousFastAction(true)" class="h-[30%] w-[5.5%] bottom-[53%] absolute left-[11.5%] cursor-pointer">
+                                            <img src="./img/dashboard/arrow.png" alt="">
+                                        </div>
+                                        <div @click="nextFastAction(true)" class="h-[30%] w-[5.5%] bottom-[53%] absolute right-[10%] cursor-pointer" style="transform: rotate(180deg);">
+                                            <img src="./img/dashboard/arrow.png" alt="">
+                                        </div>
+    
+                                        <div @click="closeFastAction(true)" class="cursor-pointer h-[24.7%] w-[8.3%] absolute bottom-[5.8%] left-[3.5%]">
+                                            <img src="./img/dashboard/fastActionClose.png" alt="">
+                                        </div>
+    
+                                        <div @click="confirmFastAction('editsalary')" class="h-[26.3%] w-[33.5%] absolute bottom-[5.5%] flex items-center justify-center cursor-pointer">
+                                            <img class="absolute" src="./img/dashboard/fastActionConfirm.png" alt="">
+                                            <span class="text-[0.83333vw]">{{locales.confirm}}</span>
+                                        </div>
+                                    </div>
+                                </transition>
+
+                                <div class="h-[42%] w-[21.3%] right-[3.2%] absolute flex justify-center">
+                                    <img class="absolute" src="./img/grade_manage/employee_list.png" alt="">
+                                    <h1 class="text-[1.04167vw] absolute top-[4%]">{{locales.employees}}</h1>
+                                    <div class="h-full w-full flex items-center justify-center">
+                                        <div class="h-[71%] absolute text-[0.84167vw] top-[18%] w-[90%] overflow-y-auto text-center">
+                                            <div @click="viewEmployeeInfo(v, true)" v-for="v in getGradeEmployee(this.gradeNumberSelected)" :style="v.identifier == getMyInfo().identifier ? 'color: white' : 'color: #888787'" class="cursor-pointer">{{v.fullName}}</div>
+                                            <div v-if="getGradeEmployee(this.gradeNumberSelected).length == 0">{{locales.no_player}}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </transition>
+
+                        <transition name="dashboard">
+                            <div v-if="screen=='grades'" class="h-full w-full absolute flex items-center justify-center">
+                                <h1 class="titleScreen">{{locales.grade_list}}</h1>
+                                <div class="h-[8.3%] w-[31.4%] absolute top-[12.3%]">
+                                    <img src="./img/employee/input.png" class="absolute" alt="">
+                                    <input v-model="grade_name" type="text" class="text-[#6B9DCB] text-[0.9375vw] h-full w-full absolute p-[0.5vw]" :placeholder="locales.input_employee">
+                                </div>
+                                <div class="h-[65.24%] absolute top-[26.2%] w-[32.7%] overflow-y-auto">
+                                    <div v-for="(v,k) in searchFromGrade()" id="employee" class="h-[20.5%] w-full relative mb-[6%]">
+                                        <img class="absolute" src="./img/employee/employee.png" alt="">
+                                        <div class="h-full w-full absolute flex justify-center items-center">
+                                            <div class="h-[75%] w-[60%]">
+                                                <h1 class="text-[0.9375vw]">{{v.label}}</h1>
+                                                <h1 class="text-[0.68125vw] text-[#BABABA]">{{getGradeEmployee(v.number).length}} {{locales.employees}}</h1>
+                                            </div>
+                                            <div @click="viewGradeInfo(v)" class="h-[60%] w-[12%] absolute right-[4.5%] cursor-pointer">
+                                                <img src="./img/employee/action.png" alt="">
+                                            </div>
+                                            <div class="rounded-full h-[75%] w-[15%] border absolute left-[2%] flex items-center justify-center">
+                                                <div style="background-color: rgba(45, 92, 119, 0.29);" class="h-[90%] w-[90%] border rounded-full flex justify-center items-center">
+                                                    <h1 class="text-[1.30208vw]">{{k+1}}</h1>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </transition>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+
+        <script src='https://code.jquery.com/jquery-3.1.1.min.js'></script>
+        <script src='https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js'></script>
+        <script src="./js/script.js"></script>
+        <script src='https://cdn.tailwindcss.com'></script>
+    </body>
+</html>
