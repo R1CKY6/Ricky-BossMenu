@@ -29,8 +29,8 @@
 `exports['Ricky-BossMenu']:GetSocietyMoney(job)` -- CLIENT SIDE AND SERVER SIDE
 
 
-[Video Preview](https://www.youtube.com/watch?v=IbNaZRQycik)
-[Forum CFX](https://forum.cfx.re/t/release-free-esx-qbcore-advanced-reward-system/5177016)
+[Video Preview](https://www.youtube.com/watch?v=IbNaZRQycik)<br>
+[Forum CFX](https://forum.cfx.re/t/release-free-esx-qbcore-advanced-reward-system/5177016)<br>
 [Download](https://github.com/R1CKY6/Ricky-BossMenu)
 
 # Support
