@@ -24,8 +24,8 @@ GetPlayTime = function(src)
     local result =  MySQL.Sync.fetchAll("SELECT * FROM ricky_bossmenu WHERE identifier = @identifier", {
           ['@identifier'] = xPlayer.identifier,
     })
-    if not result then 
-        return 0 
+    if not result or not result[1] or not result[1].playTime then 
+        return 0
     end
     return result[1].playTime or 0
 end
