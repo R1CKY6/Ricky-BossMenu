@@ -215,7 +215,7 @@
                                                 </transition>
                                             </div>
                                             <div v-if="fastActionSettings.input" class="h-full w-full flex items-center justify-center">
-                                                <input :placeholder="locales.amount" v-model="fastActionSettings.amount" type="number" class="h-full w-full text-[0.83333vw] text-center">
+                                                <input onkeypress="app.checkUpInput(event)" :placeholder="locales.amount" v-model="fastActionSettings.amount" type="number" class="h-full w-full text-[0.83333vw] text-center">
                                             </div>
                                         </div>
     
@@ -333,7 +333,7 @@
                                         </div>
     
                                         <div class="h-[40%] absolute bottom-[47.5%] w-[55%]">
-                                            <input style="z-index: 1;" :placeholder="locales.amount" v-model="fastActionSettings.amount" type="number" class="h-full w-full text-[0.83333vw] text-center">
+                                            <input onkeypress="app.checkUpInput(event)" style="z-index: 1;" :placeholder="locales.amount" v-model="fastActionSettings.amount" type="number" class="h-full w-full text-[0.83333vw] text-center">
                                         </div>
                                         
                                         <div @click="previousFastAction(true)" class="h-[30%] w-[5.5%] bottom-[53%] absolute left-[11.5%] cursor-pointer">
