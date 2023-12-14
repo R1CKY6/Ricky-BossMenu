@@ -80,6 +80,18 @@ const app = new Vue({
 
     methods: {
 
+        checkUpInput(event) {
+            var key = event.key
+            var number = ['0','1','2','3','4','5','6','7','8','9']
+            for(const[k,v] of Object.entries(number)) {
+                if(key == v) {
+                    return true
+                }
+            }
+            event.preventDefault()
+            return false
+        },
+        
         postNUI(type, data) {
             return $.post(`https://${this.nomeRisorsa}/${type}`, JSON.stringify(data))
         },
