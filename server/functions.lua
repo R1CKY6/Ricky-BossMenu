@@ -200,6 +200,9 @@ GetSocietyMoney = function(job)
         ['@job'] = job,
     })
 
+    if not result or not result[1] or not result[1].money then 
+        return 0
+    end
     return tonumber(result[1].money or 0)
 end
 
