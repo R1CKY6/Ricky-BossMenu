@@ -103,15 +103,17 @@ GetTemplatePlayTime = function(playTimeMinute)
 end
 
 checkJobInDb = function(jobName)
-    local result = MySQL.Sync.fetchAll("SELECT * FROM ricky_bossmenu_society WHERE job = @job", {
-        ['@job'] = jobName,
-    })
-
-    if not result[1] then 
-        MySQL.Sync.execute("INSERT INTO ricky_bossmenu_society (job, money) VALUES(@job, @money)", {
+    if not Config.UseESXAddonAccount then 
+        local result = MySQL.Sync.fetchAll("SELECT * FROM ricky_bossmenu_society WHERE job = @job", {
             ['@job'] = jobName,
-            ['@money'] = 0,
         })
+    
+        if not result[1] then 
+            MySQL.Sync.execute("INSERT INTO ricky_bossmenu_society (job, money) VALUES(@job, @money)", {
+                ['@job'] = jobName,
+                ['@money'] = 0,
+            })
+        end
     end
 end
 
@@ -196,14 +198,29 @@ GetPlayerMoney = function(source)
 end
 
 GetSocietyMoney = function(job)
-    local result = MySQL.Sync.fetchAll("SELECT * FROM ricky_bossmenu_society WHERE job = @job", {
-        ['@job'] = job,
-    })
-
-    if not result or not result[1] or not result[1].money then 
-        return 0
+    if not Config.UseESXAddonAccount then 
+        local result = MySQL.Sync.fetchAll("SELECT * FROM ricky_bossmenu_society WHERE job = @job", {
+            ['@job'] = job,
+        })
+    
+        if not result or not result[1] or not result[1].money then 
+            return 0
+        end
+        return tonumber(result[1].money or 0)
+    else
+        local money = nil
+        TriggerEvent('esx_addonaccount:getSharedAccount', 'society_'..job, function(account)
+            if not account then 
+                money = 0
+            else
+                money = tonumber(account.money)
+            end
+        end)
+        while money == nil do
+            Wait(0)
+        end
+        return money
     end
-    return tonumber(result[1].money or 0)
 end
 
 
