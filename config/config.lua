@@ -6,11 +6,21 @@ Config = {}
 
 Config.HireRange = 2.5
 
+Config.UseESXAddonAccount = true
+
 Config.DateFormat = { -- https://www.lua.org/pil/22.1.html
     dashboard = '%A, %d %B %Y',
     dashboardTime = '%H:%M',
     note = '%d/%m/%y %H:%M',
     hire = '%d/%m/%y',
+}
+
+Config.MarkerSettings = {
+    type = 2,
+    color = {r = 0, g = 255, b = 0, a = 200},
+    scale = {x = 0.7, y = 0.7, z = 0.7},
+    bump = false,
+    rotate = true
 }
 
 Config.UnemployedJob = {
@@ -23,7 +33,10 @@ Config.Job = {
         label = 'Police Department',
         minGrade = 1,
         creationDate = '01/01/2021',
-        logo = "https://cdn.discordapp.com/attachments/944572269202640946/1023536303180107856/tech2.png"
+        logo = "https://cdn.discordapp.com/attachments/944572269202640946/1023536303180107856/tech2.png",
+        coords = {
+           vec3(439.845856, -982.529419, 30.689310)
+        }
     },
     ['ambulance'] = {
         label = 'EMS',
@@ -74,5 +87,6 @@ Config.Locales = {
     ['grade_edited'] = "You have edited the grade",
     ['withdrawn'] = "You withdrew %s",
     ['deposited'] = "You deposited %s",
-    ['fired'] = "You have fired %s"
+    ['fired'] = "You have fired %s",
+    ['press_to_open'] = "Press ~g~[E]~w~ to open the boss menu"
 }
