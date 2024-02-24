@@ -79,12 +79,20 @@ RegisterServerCallback('ricky_bossmenu:deposit', function(source, cb, amount, jo
 
         xPlayer.removeAccountMoney('money', amount)
 
-        local newMoney = GetSocietyMoney(job) + amount
-
-        MySQL.Sync.execute("UPDATE ricky_bossmenu_society SET money = @money WHERE job = @job", {
-            ['@money'] = newMoney,
-            ['@job'] = job
-        })
+        if not Config.UseESXAddonAccount then 
+            local newMoney = GetSocietyMoney(job) + amount
+            MySQL.Sync.execute("UPDATE ricky_bossmenu_society SET money = @money WHERE job = @job", {
+                ['@money'] = newMoney,
+                ['@job'] = job
+            })
+            TriggerClientEvent('ricky-bossmenu:refreshMoney', -1, job, newMoney)
+        else
+            TriggerEvent('esx_addonaccount:getSharedAccount', 'society_'..job, function(account)
+                if not account then return end
+                account.addMoney(amount)
+            end)
+            newMoney = GetSocietyMoney(job)
+        end
         TriggerClientEvent('ricky-bossmenu:refreshMoney', -1, job, newMoney)
         cb(true)
     else
@@ -100,13 +108,21 @@ RegisterServerCallback('ricky_bossmenu:withdraw', function(source, cb, amount, j
 
         xPlayer.addAccountMoney('money', tonumber(amount))
 
-        local newMoney = GetSocietyMoney(job) - amount
-
-        MySQL.Sync.execute("UPDATE ricky_bossmenu_society SET money = @money WHERE job = @job", {
-            ['@money'] = newMoney,
-            ['@job'] = job
-        })
-        TriggerClientEvent('ricky-bossmenu:refreshMoney', -1, job, newMoney)
+        if not Config.UseESXAddonAccount then 
+            local newMoney = GetSocietyMoney(job) - amount
+            MySQL.Sync.execute("UPDATE ricky_bossmenu_society SET money = @money WHERE job = @job", {
+                ['@money'] = newMoney,
+                ['@job'] = job
+            })
+            TriggerClientEvent('ricky-bossmenu:refreshMoney', -1, job, newMoney)
+        else
+            TriggerEvent('esx_addonaccount:getSharedAccount', 'society_'..job, function(account)
+                if not account then return end
+                account.removeMoney(amount)
+            end)
+            newMoney = GetSocietyMoney(job)
+            TriggerClientEvent('ricky-bossmenu:refreshMoney', -1, job, newMoney)
+        end
         cb(true)
     else
         cb(false)
@@ -250,4 +266,42 @@ end)
 exports('GetSocietyMoney', function(job)
     local money = GetSocietyMoney(job)
     return money or 0
+end)
+
+exports('AddMoneyToSociety', function(job, amount)
+    local money = GetSocietyMoney(job) or 0
+    if not Config.UseESXAddonAccount then 
+        local newMoney = money + amount
+        MySQL.Sync.execute("UPDATE ricky_bossmenu_society SET money = @money WHERE job = @job", {
+            ['@money'] = newMoney,
+            ['@job'] = job
+        })
+        TriggerClientEvent('ricky-bossmenu:refreshMoney', -1, job, newMoney)
+    else
+        TriggerEvent('esx_addonaccount:getSharedAccount', 'society_'..job, function(account)
+            if not account then return end
+            account.addMoney(amount)
+        end)
+        newMoney = GetSocietyMoney(job)
+        TriggerClientEvent('ricky-bossmenu:refreshMoney', -1, job, newMoney)
+    end
+end)
+
+exports('RemoveMoneyFromSociety', function(job, amount)
+    local money = GetSocietyMoney(job) or 0
+    if not Config.UseESXAddonAccount then 
+        local newMoney = money - amount
+        MySQL.Sync.execute("UPDATE ricky_bossmenu_society SET money = @money WHERE job = @job", {
+            ['@money'] = newMoney,
+            ['@job'] = job
+        })
+        TriggerClientEvent('ricky-bossmenu:refreshMoney', -1, job, newMoney)
+    else
+        TriggerEvent('esx_addonaccount:getSharedAccount', 'society_'..job, function(account)
+            if not account then return end
+            account.removeMoney(amount)
+        end)
+        newMoney = GetSocietyMoney(job)
+        TriggerClientEvent('ricky-bossmenu:refreshMoney', -1, job, newMoney)
+    end
 end)
