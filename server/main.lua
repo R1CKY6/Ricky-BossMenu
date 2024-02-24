@@ -262,13 +262,7 @@ ESX.RegisterServerCallback('ricky_bossmenu:getTime', function(source, cb)
     cb(time)
 end)
 
--- Exports
-exports('GetSocietyMoney', function(job)
-    local money = GetSocietyMoney(job)
-    return money or 0
-end)
-
-exports('AddMoneyToSociety', function(job, amount)
+AddMoneyToSociety = function(job, amount)
     local money = GetSocietyMoney(job) or 0
     if not Config.UseESXAddonAccount then 
         local newMoney = money + amount
@@ -285,9 +279,9 @@ exports('AddMoneyToSociety', function(job, amount)
         newMoney = GetSocietyMoney(job)
         TriggerClientEvent('ricky-bossmenu:refreshMoney', -1, job, newMoney)
     end
-end)
+end
 
-exports('RemoveMoneyFromSociety', function(job, amount)
+RemoveMoneyFromSociety = function(job, amount)
     local money = GetSocietyMoney(job) or 0
     if not Config.UseESXAddonAccount then 
         local newMoney = money - amount
@@ -304,4 +298,28 @@ exports('RemoveMoneyFromSociety', function(job, amount)
         newMoney = GetSocietyMoney(job)
         TriggerClientEvent('ricky-bossmenu:refreshMoney', -1, job, newMoney)
     end
+end
+
+RegisterServerEvent('ricky-bossmenu:AddMoneyToSociety')
+AddEventHandler('ricky-bossmenu:AddMoneyToSociety', function(job, amount)
+    AddMoneyToSociety(job, amount)
+end)
+
+RegisterServerEvent('ricky-bossmenu:RemoveMoneyFromSociety')
+AddEventHandler('ricky-bossmenu:RemoveMoneyFromSociety', function(job, amount)
+    RemoveMoneyFromSociety(job, amount)
+end)
+
+-- Exports
+exports('GetSocietyMoney', function(job)
+    local money = GetSocietyMoney(job)
+    return money or 0
+end)
+
+exports('AddMoneyToSociety', function(job, amount)
+    AddMoneyToSociety(job, amount)
+end)
+
+exports('RemoveMoneyFromSociety', function(job, amount)
+    RemoveMoneyFromSociety(job, amount)
 end)
